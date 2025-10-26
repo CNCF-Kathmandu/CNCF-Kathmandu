@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>Events</h1>
+        <p>Join us for exciting workshops, talks, and networking events</p>
+    </div>
+</section>
+
+<section class="events-content">
+    <div class="container">
+        <div class="events-filter">
+            <button class="filter-btn active">All Events</button>
+            <button class="filter-btn">Upcoming</button>
+            <button class="filter-btn">Past Events</button>
+        </div>
+
+        <div class="events-list">
+            {% for event in events %}
+            <div class="event-item {% if event.status == 'completed' %}past{% endif %}">
+                <div class="event-date-display">
+                    <span class="event-month">{{ event.date.split('-')[1] }}</span>
+                    <span class="event-day">{{ event.date.split('-')[2] }}</span>
+                    <span class="event-year">{{ event.date.split('-')[0] }}</span>
+                </div>
+                <div class="event-details">
+                    <div class="event-status-badge">{{ event.status|title }}</div>
+                    <h3>{{ event.title }}</h3>
+                    <p class="event-speaker"><strong>Speaker:</strong> {{ event.speaker }}</p>
+                    <p class="event-description">{{ event.description }}</p>
+                    <div class="event-actions">
+                        {% if event.status == 'upcoming' %}
+                        <a href="#" class="btn btn-small">Register Now</a>
+                        {% endif %}
+                        <a href="#" class="btn btn-small btn-outline">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="events-cta">
+            <h3>Interested in Speaking?</h3>
+            <p>We're always looking for speakers to share their knowledge with our community.</p>
+            <a href="/contact" class="btn btn-primary">Become a Speaker</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
