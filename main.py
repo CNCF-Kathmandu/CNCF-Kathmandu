@@ -7,8 +7,7 @@ from fastapi import FastAPI, Request, Form
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from typing import Optional
-import os
+import yaml
 
 app = FastAPI(
     title="CNCF Kathmandu",
@@ -22,38 +21,15 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # Templates
 templates = Jinja2Templates(directory="templates")
 
-# Sample data storage (in production, this would be a database)
-events_db = [
-    {
-        "id": 1,
-        "title": "Kubernetes Workshop",
-        "date": "2024-11-15",
-        "speaker": "John Doe",
-        "description": "Learn Kubernetes from scratch",
-        "status": "upcoming"
-    },
-    {
-        "id": 2,
-        "title": "Docker Deep Dive",
-        "date": "2024-10-20",
-        "speaker": "Jane Smith",
-        "description": "Advanced Docker concepts",
-        "status": "completed"
-    }
-]
+# Get data from yaml file
+with open('data.yaml') as file:
+    data = file.read() 
+data = yaml.load(data, Loader=yaml.Loader)
 
-team_members = [
-    {"name": "John Doe", "role": "Organizer", "bio": "Cloud Native enthusiast"},
-    {"name": "Jane Smith", "role": "Co-Organizer", "bio": "Kubernetes expert"},
-    {"name": "Bob Wilson", "role": "Community Lead", "bio": "DevOps advocate"}
-]
-
-resources = [
-    {"title": "Getting Started with Kubernetes", "link": "#", "type": "Tutorial"},
-    {"title": "Introduction to Cloud Native", "link": "#", "type": "Article"},
-    {"title": "CNCF Landscape", "link": "#", "type": "Reference"}
-]
-
+# Load data
+events_db = data['events']
+team_members = data['team members']
+resources = data['resources']
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):

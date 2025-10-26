@@ -20,9 +20,9 @@
             {% for event in events %}
             <div class="event-item {% if event.status == 'completed' %}past{% endif %}">
                 <div class="event-date-display">
-                    <span class="event-month">{{ event.date.split('-')[1] }}</span>
-                    <span class="event-day">{{ event.date.split('-')[2] }}</span>
-                    <span class="event-year">{{ event.date.split('-')[0] }}</span>
+                    <span class="event-month">{{ event.date.month }}</span>
+                    <span class="event-day">{{ event.date.day }}</span>
+                    <span class="event-year">{{ event.date.year }}</span>
                 </div>
                 <div class="event-details">
                     <div class="event-status-badge">{{ event.status|title }}</div>
