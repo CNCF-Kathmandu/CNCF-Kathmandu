@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>About CNCF Kathmandu</h1>
+        <p>Empowering developers with cloud native technologies</p>
+    </div>
+</section>
+
+<section class="about-content">
+    <div class="container">
+        <div class="about-description">
+            <h2>Our Mission</h2>
+            <p>{{ description }}</p>
+        </div>
+
+        <div class="team-section">
+            <h2 class="section-title">Meet Our Team</h2>
+            <div class="team-grid">
+                {% for member in team_members %}
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <div class="avatar-placeholder">{{ member.name[0] }}</div>
+                    </div>
+                    <h3>{{ member.name }}</h3>
+                    <p class="team-role">{{ member.role }}</p>
+                    <p class="team-bio">{{ member.bio }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="community-section">
+            <h2 class="section-title">Join Our Community</h2>
+            <div class="community-stats">
+                <div class="stat-item">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">Community Members</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Events Hosted</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">20+</div>
+                    <div class="stat-label">Speakers</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>Contact Us</h1>
+        <p>Get in touch with the CNCF Kathmandu community</p>
+    </div>
+</section>
+
+<section class="contact-content">
+    <div class="container">
+        <div class="contact-grid">
+            <div class="contact-info">
+                <h2>Get in Touch</h2>
+                <p>Have questions, suggestions, or want to get involved? We'd love to hear from you!</p>
+                
+                <div class="contact-methods">
+                    <div class="contact-method">
+                        <div class="method-icon">📧</div>
+                        <h3>Email</h3>
+                        <p>hello@cncfkathmandu.org</p>
+                    </div>
+                    <div class="contact-method">
+                        <div class="method-icon">💬</div>
+                        <h3>Slack</h3>
+                        <p>Join our workspace</p>
+                    </div>
+                    <div class="contact-method">
+                        <div class="method-icon">🐙</div>
+                        <h3>GitHub</h3>
+                        <p>Check out our projects</p>
+                    </div>
+                </div>
+
+                {% if message %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="contact-form-container">
+                <h2>Send us a Message</h2>
+                <form action="/contact" method="post" class="contact-form">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" required placeholder="Your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required placeholder="your@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" required rows="6" placeholder="Your message..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+

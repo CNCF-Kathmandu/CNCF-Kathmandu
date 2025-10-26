@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>Resources</h1>
+        <p>Learn more about cloud native technologies</p>
+    </div>
+</section>
+
+<section class="resources-content">
+    <div class="container">
+        <div class="resources-section">
+            <h2 class="section-title">Learning Resources</h2>
+            <div class="resources-grid">
+                {% for resource in resources %}
+                <div class="resource-card">
+                    <div class="resource-type">{{ resource.type }}</div>
+                    <h3>{{ resource.title }}</h3>
+                    <a href="{{ resource.link }}" class="btn btn-small">View Resource</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="resources-section">
+            <h2 class="section-title">Popular Technologies</h2>
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <h3>Kubernetes</h3>
+                    <p>Container orchestration platform</p>
+                </div>
+                <div class="tech-card">
+                    <h3>Docker</h3>
+                    <p>Containerization platform</p>
+                </div>
+                <div class="tech-card">
+                    <h3>Prometheus</h3>
+                    <p>Monitoring and alerting toolkit</p>
+                </div>
+                <div class="tech-card">
+                    <h3>Helm</h3>
+                    <p>Package manager for Kubernetes</p>
+                </div>
+                <div class="tech-card">
+                    <h3>Istio</h3>
+                    <p>Service mesh for microservices</p>
+                </div>
+                <div class="tech-card">
+                    <h3>Grafana</h3>
+                    <p>Analytics and visualization platform</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="resources-cta">
+            <h3>Want to Add Resources?</h3>
+            <p>Contribute to our knowledge base by submitting useful resources.</p>
+            <a href="/contact" class="btn btn-primary">Suggest a Resource</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
