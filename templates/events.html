@@ -16,9 +16,16 @@
             <button class="filter-btn">Past Events</button>
         </div>
 
+        <div class="events-category-filter" style="margin-top:10px;">
+            <button class="category-btn active" data-category="all">All Categories</button>
+            <button class="category-btn" data-category="Workshop">Workshop</button>
+            <button class="category-btn" data-category="Talk">Talk</button>
+            <button class="category-btn" data-category="Hackathon">Hackathon</button>
+        </div>
+
         <div class="events-list">
             {% for event in events %}
-            <div class="event-item {% if event.status == 'completed' %}past{% endif %}">
+            <div class="event-item {% if event.status == 'completed' %}past{% endif %}" data-status="{{ event.status }}" data-category="{{ event.category }}">
                 <div class="event-date-display">
                     <span class="event-month">{{ event.date.split('-')[1] }}</span>
                     <span class="event-day">{{ event.date.split('-')[2] }}</span>
@@ -39,6 +46,57 @@
             </div>
             {% endfor %}
         </div>
+
+        <script>
+            (function(){
+                const statusBtns = document.querySelectorAll('.events-filter .filter-btn');
+                const categoryBtns = document.querySelectorAll('.events-category-filter .category-btn');
+                const items = document.querySelectorAll('.events-list .event-item');
+
+                let activeStatus = 'all';
+                let activeCategory = 'all';
+
+                function applyFilters(){
+                    items.forEach(item => {
+                        const status = item.getAttribute('data-status') || '';
+                        const category = item.getAttribute('data-category') || '';
+
+                        const statusMatch = (activeStatus === 'all') || (activeStatus === 'upcoming' && status === 'upcoming') || (activeStatus === 'past' && status === 'completed');
+                        const categoryMatch = (activeCategory === 'all') || (category === activeCategory);
+
+                        if(statusMatch && categoryMatch){
+                            item.style.display = '';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                }
+
+                statusBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        statusBtns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        const text = btn.textContent.trim().toLowerCase();
+                        if(text === 'all events') activeStatus = 'all';
+                        else if(text === 'upcoming') activeStatus = 'upcoming';
+                        else activeStatus = 'past';
+                        applyFilters();
+                    });
+                });
+
+                categoryBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        categoryBtns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        activeCategory = btn.getAttribute('data-category') || 'all';
+                        applyFilters();
+                    });
+                });
+
+                // Initial filter pass
+                applyFilters();
+            })();
+        </script>
 
         <div class="events-cta">
             <h3>Interested in Speaking?</h3>
