@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Speakers - CNCF Kathmandu{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>Meet Our Speakers</h1>
+        <p>Discover the experts who share knowledge and inspire our community events.</p>
+    </div>
+</section>
+
+<section class="speakers-section">
+    <div class="container">
+        <div class="speakers-intro">
+            <h2>Community Voices</h2>
+            <p>
+                Our speaker lineup brings together practitioners, advocates, and builders from across the
+                cloud native ecosystem. Explore their profiles to learn about their areas of expertise and
+                connect with them after the sessions.
+            </p>
+        </div>
+
+        <div class="speakers-grid">
+            {% for speaker in speakers %}
+            <article class="speaker-card">
+                <div class="speaker-avatar">
+                    {% if speaker.image %}
+                    <img src="{{ speaker.image }}" alt="Photo of {{ speaker.name }}">
+                    {% else %}
+                    {% set name_parts = speaker.name.split() %}
+                    <span>
+                        {{ name_parts[0][0] }}{% if name_parts|length > 1 %}{{ name_parts[-1][0] }}{% endif %}
+                    </span>
+                    {% endif %}
+                </div>
+                <h3>{{ speaker.name }}</h3>
+                <p class="speaker-role">{{ speaker.title }}{% if speaker.company %} @ {{ speaker.company }}{% endif %}</p>
+                <p class="speaker-bio">{{ speaker.bio }}</p>
+                {% if speaker.topics %}
+                <div class="speaker-topics">
+                    {% for topic in speaker.topics %}
+                    <span class="topic-chip">{{ topic }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% if speaker.socials %}
+                <div class="speaker-social">
+                    {% if speaker.socials.get('linkedin') %}
+                    <a href="{{ speaker.socials.get('linkedin') }}" class="speaker-social-link" target="_blank" rel="noopener">LinkedIn</a>
+                    {% endif %}
+                    {% if speaker.socials.get('twitter') %}
+                    <a href="{{ speaker.socials.get('twitter') }}" class="speaker-social-link" target="_blank" rel="noopener">Twitter</a>
+                    {% endif %}
+                    {% if speaker.socials.get('github') %}
+                    <a href="{{ speaker.socials.get('github') }}" class="speaker-social-link" target="_blank" rel="noopener">GitHub</a>
+                    {% endif %}
+                    {% if speaker.socials.get('website') %}
+                    <a href="{{ speaker.socials.get('website') }}" class="speaker-social-link" target="_blank" rel="noopener">Website</a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

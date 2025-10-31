@@ -61,6 +61,19 @@ class TestResourcesPage:
         response = client.get("/resources")
         assert b"Resources" in response.content
 
+class TestSpeakersPage:
+    """Tests for the speakers page route"""
+
+    def test_speakers_page_status_code(self, client):
+        """Test that speakers page returns 200 status code"""
+        response = client.get("/speakers")
+        assert response.status_code == 200
+
+    def test_speakers_page_content(self, client):
+        """Test that speakers page contains expected content"""
+        response = client.get("/speakers")
+        assert b"Meet Our Speakers" in response.content
+        assert b"Community Voices" in response.content
 
 class TestContactPage:
     """Tests for the contact page route"""
@@ -123,6 +136,7 @@ class TestAPIResponseFormat:
         assert 'href="/"' in html
         assert 'href="/about"' in html
         assert 'href="/events"' in html
+        assert 'href="/speakers"' in html
         assert 'href="/resources"' in html
         assert 'href="/contact"' in html
 
