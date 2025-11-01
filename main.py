@@ -9,12 +9,15 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from typing import Optional
 import os
+import datetime
 
 app = FastAPI(
     title="CNCF Kathmandu",
     description="Official website for CNCF Kathmandu Community",
     version="1.0.0"
 )
+
+year = datetime.datetime.now().year
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -61,6 +64,7 @@ async def home(request: Request):
     context = {
         "request": request,
         "title": "CNCF Kathmandu - Home",
+        "year": year,
         "community_name": "CNCF Kathmandu",
         "tagline": "Building the Future of Cloud Native Computing",
         "upcoming_events": [e for e in events_db if e["status"] == "upcoming"][:3]
