@@ -66,7 +66,18 @@ resources = [
 # Displays all upcoming events in the home page
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
-    """Home page displaying community information"""
+    """
+    Render the home page displaying general community information and upcoming events.
+
+    HTTP Method:
+        GET
+
+    Args:
+        request (Request): The FastAPI request object, used to pass context to a template.
+
+    Returns:
+        HTMLResponse: Rendered 'index.html' template with details such as title, tagline, and a list of upcoming events.
+    """
     context = {
         "request": request,
         "title": "CNCF Kathmandu - Home",
@@ -81,7 +92,18 @@ async def home(request: Request):
 # Fills the about page with community information
 @app.get("/about", response_class=HTMLResponse)
 async def about(request: Request):
-    """About page with community information"""
+    """
+    Display the About page containing information about the CNCF Kathmandu community.
+
+    HTTP Method:
+        GET
+
+    Args:
+        request (Request): The FastAPI request object.
+
+    Returns:
+        HTMLResponse: Rendered 'about.html' template showing team members and a brief community description.
+    """
     context = {
         "request": request,
         "title": "About - CNCF Kathmandu",
@@ -94,7 +116,18 @@ async def about(request: Request):
 # Lists all the events in the listing page
 @app.get("/events", response_class=HTMLResponse)
 async def events(request: Request):
-    """Events listing page"""
+    """
+    Display a list of all community events, both upcoming and completed.
+
+    HTTP Method:
+        GET
+
+    Args:
+        request (Request): The FastAPI request object.
+
+    Returns:
+        HTMLResponse: Rendered 'events.html' template containing event details.
+    """
     context = {
         "request": request,
         "title": "Events - CNCF Kathmandu",
@@ -106,7 +139,18 @@ async def events(request: Request):
 # This function gets the `resources.html` page
 @app.get("/resources", response_class=HTMLResponse)
 async def resources_page(request: Request):
-    """Resources page"""
+    """
+    Display a list of cloud-native learning resources.
+
+    HTTP Method:
+        GET
+
+    Args:
+        request (Request): The FastAPI request object.
+
+    Returns:
+        HTMLResponse: Rendered 'resources.html' template with articles, tutorials, and reference links.
+    """
     context = {
         "request": request,
         "title": "Resources - CNCF Kathmandu",
@@ -118,7 +162,18 @@ async def resources_page(request: Request):
 # This functions gets the `contact.html` page
 @app.get("/contact", response_class=HTMLResponse)
 async def contact_get(request: Request):
-    """Contact page (GET)"""
+    """
+    Render the contact form page.
+
+    HTTP Method:
+        GET
+
+    Args:
+        request (Request): The FastAPI request object.
+
+    Returns:
+        HTMLResponse: Rendered 'contact.html' form for users to reach out to the community.
+    """
     context = {"request": request, "title": "Contact - CNCF Kathmandu", "message": None}
     return templates.TemplateResponse("contact.html", context)
 
@@ -132,7 +187,22 @@ async def contact_post(
     email: str = Form(...),
     message: str = Form(...),
 ):
-  ]    """Contact page (POST)"""
+    """
+    Handle form submission from the contact page and send a welcome email.
+
+    HTTP Method:
+        POST
+
+    Args:
+        request (Request): The FastAPI request object.
+        background_tasks (BackgroundTasks): Background task handler for sending asynchronous emails.
+        name (str): Name of the sender.
+        email (str): Email address of the sender.
+        message (str): Message body provided by the user.
+
+    Returns:
+        HTMLResponse: Rendered 'contact.html' template showing a success or error message.
+    """
     # In production, this would send an email or save to database
     context = {
         "request": request,
