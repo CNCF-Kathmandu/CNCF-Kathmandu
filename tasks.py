@@ -1,6 +1,6 @@
 from string import Template
 
-def mock_send_email(email: str, content: str ) -> None:
+async def mock_send_email(email: str, content: str ) -> None:
     print(f"Sending Mock Email to {email} with content {content}")
 
 
