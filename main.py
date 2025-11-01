@@ -132,7 +132,7 @@ async def contact_post(
     email: str = Form(...),
     message: str = Form(...),
 ):
-  ]    """Contact page (POST)"""
+    """Contact page (POST)"""
     # In production, this would send an email or save to database
     context = {
         "request": request,
