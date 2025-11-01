@@ -139,8 +139,8 @@ async def contact_post(
             "message": str(e),
         }
         return templates.TemplateResponse("contact.html", context)
-    
-    background_tasks.add_task(send_welcome_email(email=email, name=name))
+
+    background_tasks.add_task(send_welcome_email, email, name)
 
     return templates.TemplateResponse("contact.html", context)
 
