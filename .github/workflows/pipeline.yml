@@ -1,5 +1,6 @@
 name: CI/CD Deployment
 on: [push]
+
 jobs:
     image-scan:
         name: Build docker image and run image scan
@@ -47,6 +48,9 @@ jobs:
             
             - name: Add tag to push into dockerhub
               run: docker tag cncf:latest ${{secrets.DOCKER_USER}}/cncf-kathmandu:latest
+            
+            - name: Push to dockerhub 
+              run: docker push ${{secrets.DOCKER_USER}}/cncf-kathmandu:latest
                 
             - name: Run container for testing
               run: |
