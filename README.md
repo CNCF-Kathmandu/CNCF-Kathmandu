@@ -138,6 +138,20 @@ View HTML coverage report:
 open htmlcov/index.html
 ```
 
+## Deployment
+
+Need to setup dockerhub
+
+1. Check .github/workflows/pipeline.yml --> check the recent deployment and click on it
+Then, re-run all the jobs.
+
+2. Create repository secrets under the repo settings with: DOCKER_USER, DOCKER_PASSWORD
+
+Create docker password using dockerhub
+
+3. This deployment worked on docker automation and checks for image vulnerabilities scans as well
+
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
