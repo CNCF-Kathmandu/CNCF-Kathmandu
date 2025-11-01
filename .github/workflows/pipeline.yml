@@ -48,7 +48,7 @@ jobs:
             - name: Run container for testing
               run: |
                 echo "Starting container application"
-                docker run -d --name cncf_app -p 8080:8080 cncf:latest
+                docker run -d --name cncf_app -p 8000:8000 cncf:latest
                 sleep 10 # wait for startup
                  
                 echo "Checking container status..."
