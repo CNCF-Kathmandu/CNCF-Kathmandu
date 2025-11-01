@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if post %}
+    {# Individual Blog Post View #}
+    <section class="page-header">
+        <div class="container">
+            <a href="/blog" class="back-link">← Back to Blog</a>
+        </div>
+    </section>
+
+    <section class="blog-post-content">
+        <div class="container">
+            <article class="blog-post">
+                <div class="post-header">
+                    <h1>{{ post.title }}</h1>
+                    <div class="post-meta">
+                        <span class="meta-item">
+                            <span class="meta-icon"></span>
+                            <span>{{ post.author }}</span>
+                        </span>
+                        <span class="meta-item">
+                            <span class="meta-icon"></span>
+                            <span>{{ post.date }}</span>
+                        </span>
+                    </div>
+                    <div class="post-tags">
+                        {% for tag in post.tags %}
+                        <span class="tag">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="post-content">
+                    {{ post.content | safe }}
+                </div>
+            </article>
+
+            {% if related_posts %}
+            <div class="related-posts">
+                <h2>Related Articles</h2>
+                <div class="related-grid">
+                    {% for related in related_posts %}
+                    <div class="related-card">
+                        <h3><a href="/blog/{{ related.slug }}">{{ related.title }}</a></h3>
+                        <p class="related-date"> {{ related.date }}</p>
+                        <p class="related-excerpt">{{ related.excerpt }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+{% else %}
+    {# Blog Listing View #}
+    <section class="page-header">
+        <div class="container">
+            <h1> Blog</h1>
+            <p>Insights, tutorials, and updates from our cloud native community</p>
+        </div>
+    </section>
+
+    <section class="blog-listing">
+        <div class="container">
+            <div class="blog-grid">
+                {% for post in posts %}
+                <article class="blog-card">
+                    <div class="blog-card-image">
+                        <span class="blog-icon"></span>
+                    </div>
+                    <div class="blog-card-content">
+                        <div class="blog-meta">
+                            <span> {{ post.author }}</span>
+                            <span> {{ post.date }}</span>
+                        </div>
+                        <h2 class="blog-card-title">
+                            <a href="/blog/{{ post.slug }}">{{ post.title }}</a>
+                        </h2>
+                        <p class="blog-excerpt">{{ post.excerpt }}</p>
+                        <div class="blog-tags">
+                            {% for tag in post.tags %}
+                            <span class="tag">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                        <a href="/blog/{{ post.slug }}" class="btn btn-primary">Read More →</a>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+{% endif %}
+
+{% endblock %}
