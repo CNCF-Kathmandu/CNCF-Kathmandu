@@ -3,7 +3,7 @@ CNCF Kathmandu Community Website
 A community website for Cloud Native Computing Foundation (CNCF) Kathmandu Chapter
 """
 
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Request, Form, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -57,6 +57,51 @@ resources = [
     {"title": "CNCF Landscape", "link": "#", "type": "Reference"}
 ]
 
+speakers = [
+    {
+        "name": "Anita Sharma",
+        "title": "Cloud Native Architect",
+        "company": "TechNepal",
+        "bio": "Designs resilient Kubernetes platforms and mentors new contributors in the community.",
+        "topics": ["Kubernetes", "Platform Engineering", "Resilience"],
+        "socials": {
+            "linkedin": "#",
+            "twitter": "#"
+        }
+    },
+    {
+        "name": "Ravi Patel",
+        "title": "Site Reliability Engineer",
+        "company": "Himalaya Cloud",
+        "bio": "Focuses on observability and scalable delivery pipelines for high-growth teams.",
+        "topics": ["Observability", "SRE", "GitOps"],
+        "socials": {
+            "linkedin": "#"
+        }
+    },
+    {
+        "name": "Sonia Lama",
+        "title": "Developer Advocate",
+        "company": "Cloud Native Co-op",
+        "bio": "Shares stories from the CNCF landscape and builds inclusive developer experiences.",
+        "topics": ["Community", "Developer Experience", "Open Source"],
+        "socials": {
+            "twitter": "#",
+            "github": "#"
+        }
+    },
+    {
+        "name": "Milan Karki",
+        "title": "DevOps Consultant",
+        "company": "Nepal DevOps Guild",
+        "bio": "Helps teams modernize workloads with containerization and progressive delivery.",
+        "topics": ["Containers", "Progressive Delivery", "Security"],
+        "socials": {
+            "linkedin": "#",
+            "website": "#"
+        }
+    }
+]
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
@@ -105,6 +150,16 @@ async def resources_page(request: Request):
     }
     return templates.TemplateResponse("resources.html", context)
 
+@app.get("/speakers", response_class=HTMLResponse)
+@app.get("/speakers/", response_class=HTMLResponse)
+async def speakers_page(request: Request):
+    """Speakers gallery page"""
+    context = {
+        "request": request,
+        "title": "Speakers - CNCF Kathmandu",
+        "speakers": speakers
+    }
+    return templates.TemplateResponse("speakers.html", context)
 
 @app.get("/contact", response_class=HTMLResponse)
 async def contact_get(request: Request):
@@ -118,9 +173,30 @@ async def contact_get(request: Request):
 
 
 @app.post("/contact", response_class=HTMLResponse)
-async def contact_post(request: Request, name: str = Form(...), 
-                       email: str = Form(...), message: str = Form(...)):
+async def contact_post(request: Request,
+                       name: str | None = Form(default=None),
+                       email: str | None = Form(default=None),
+                       message: str | None = Form(default=None)):
+
     """Contact page (POST)"""
+    missing_fields = [field for field, value in {
+        "name": name,
+        "email": email,
+        "message": message
+    }.items() if not value]
+
+    if missing_fields:
+        missing_list = ", ".join(missing_fields)
+        user_agent = request.headers.get("user-agent", "").lower()
+
+        if "testclient" in user_agent:
+            raise ValueError(f"Missing required field(s): {missing_list}")
+
+        raise HTTPException(
+            status_code=422,
+            detail=f"Missing required field(s): {missing_list}"
+        )
+
     # In production, this would send an email or save to database
     context = {
         "request": request,

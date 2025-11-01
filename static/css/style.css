@@ -357,6 +357,125 @@ body {
     font-size: 1rem;
 }
 
+/* Speakers Page */
+.speakers-section {
+    padding: 4rem 0;
+    background-color: var(--bg-light);
+}
+
+.speakers-intro {
+    max-width: 760px;
+    margin: 0 auto 3rem;
+    text-align: center;
+}
+
+.speakers-intro h2 {
+    font-size: 2.25rem;
+    margin-bottom: 1rem;
+}
+
+.speakers-intro p {
+    color: var(--text-light);
+}
+
+.speakers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2.5rem;
+}
+
+.speaker-card {
+    background-color: white;
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.speaker-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-md);
+}
+
+.speaker-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 600;
+    overflow: hidden;
+}
+
+.speaker-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.speaker-role {
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.speaker-bio {
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+}
+
+.speaker-topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.topic-chip {
+    padding: 0.35rem 0.85rem;
+    background-color: rgba(37, 99, 235, 0.1);
+    color: var(--primary-color);
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.speaker-social {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.speaker-social-link {
+    color: var(--secondary-color);
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.speaker-social-link:hover {
+    color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+    .speakers-section {
+        padding: 3rem 0;
+    }
+
+    .speaker-card {
+        padding: 2rem 1.5rem;
+    }
+}
+
 /* Events Page */
 .events-filter {
     display: flex;
