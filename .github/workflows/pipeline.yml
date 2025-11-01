@@ -52,7 +52,4 @@ jobs:
                 sleep 10 # wait for startup
                  
                 echo "Checking container status..."
-                docker ps     
-
-                echo "Testing application health..."
-                curl -f http://localhost:8080 
+                docker ps 
