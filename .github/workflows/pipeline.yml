@@ -55,4 +55,4 @@ jobs:
                 docker ps     
 
                 echo "Testing application health..."
-                curl -f http://localhost:8080 || (echo "App did not start correctly" && exit 1)
+                curl -f http://localhost:8080 
