@@ -1,0 +1,63 @@
+name: CI/CD Deployment
+on: [push]
+
+jobs:
+    image-scan:
+        name: Build docker image and run image scan
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code 
+              uses: actions/checkout@v4
+              
+            - name: Setup Docker
+              uses: docker/setup-buildx-action@v3
+            
+            - name: Login to Dockerhub
+              uses: docker/login-action@v3
+              with:
+                  username: ${{secrets.DOCKER_USER}}
+                  password: ${{secrets.DOCKER_PASSWORD}}
+              
+            - name: Build Docker Image
+              run: docker build -f Dockerfile -t cncf:latest .
+
+            - name: Install docker scout cli
+              run:  |
+                curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh -o install-scout.sh
+                sh install-scout.sh
+      
+            - name: Docker scout quickview
+              run: docker scout quickview cncf:latest
+
+            - name: Docker scout cves
+              run: docker scout cves --format sarif -o scout.sarif cncf:latest
+            
+            - name: Docker Scout Artifacts
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                name: docker-scout-reports
+                path: scout.sarif
+            
+            - name: Upload scout artifacts
+              if: always()
+              uses: github/codeql-action/upload-sarif@v3
+              with:
+                sarif_file: scout.sarif  
+            
+            - name: Add tag to push into dockerhub
+              run: docker tag cncf:latest ${{secrets.DOCKER_USER}}/cncf-kathmandu:latest
+            
+            - name: Push to dockerhub 
+              run: docker push ${{secrets.DOCKER_USER}}/cncf-kathmandu:latest
+                
+            - name: Run container for testing
+              run: |
+                echo "Starting container application"
+                docker pull ${{secrets.DOCKER_USER}}/cncf-kathmandu:latest
+                docker run -d --name cncf_app -p 8000:${{secrets.APP_PORT}} ${{secrets.DOCKER_USER}}/cncf-kathmandu:latest
+                docker logs cncf_app
+                 
+                echo "Checking container status..."
+                docker ps 
