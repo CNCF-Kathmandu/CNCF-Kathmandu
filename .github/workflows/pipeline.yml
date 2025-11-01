@@ -30,7 +30,7 @@ jobs:
               run: docker scout quickview cncf:latest
 
             - name: Docker scout cves
-              run: docker scout cves --format sarif --o scout.sarif cncf:latest
+              run: docker scout cves --format sarif -o scout.sarif cncf:latest
             
             - name: Docker Scout Artifacts
               if: always()
