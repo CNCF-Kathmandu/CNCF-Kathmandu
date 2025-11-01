@@ -32,11 +32,15 @@
                         <p>Check out our projects</p>
                     </div>
                 </div>
-
                 {% if message %}
-                <div class="alert alert-success">
-                    {{ message }}
-                </div>
+                    {% if is_error %}
+                    <div class="alert alert-error">
+                        {{ message }}
+                    {% else %}
+                    <div class="alert alert-success">
+                        {{ message }}
+                    </div>
+                    {% endif %}
                 {% endif %}
             </div>
 

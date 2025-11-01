@@ -1,3 +1,4 @@
+/* This file contains all the css related things that points to HTML */
 /* Reset and Base Styles */
 * {
     margin: 0;
@@ -574,6 +575,12 @@ body {
     background-color: #d1fae5;
     color: #065f46;
     border: 1px solid #6ee7b7;
+}
+
+.alert-error {
+    background-color: #ff0000;
+    color: #d1fae5;
+    border: 1px solid #bf9000;
 }
 
 /* Footer */
