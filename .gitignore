@@ -56,3 +56,5 @@ htmlcov/
 # Docker
 *.log
 
+# Tests
+*.xml

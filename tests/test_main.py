@@ -140,3 +140,12 @@ class TestSampleData:
         """Test that team members data is displayed on about page"""
         response = client.get("/about")
         assert b"Organizer" in response.content or b"Co-Organizer" in response.content
+
+
+class Test404:
+    """Tests for handling 404 errors"""
+    
+    def test_404(self, client):
+        """Test that accessing a non-existent route returns 404 status code"""
+        response = client.get("/this-route-does-not-exist")
+        assert response.status_code == 404
