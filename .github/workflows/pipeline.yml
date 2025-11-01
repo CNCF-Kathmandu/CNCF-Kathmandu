@@ -56,7 +56,7 @@ jobs:
               run: |
                 echo "Starting container application"
                 docker pull ${{secrets.DOCKER_USER}}/cncf-kathmandu:latest
-                docker run -d --name cncf_app -p 8000:${APP_PORT} ${{secrets.DOCKER_USER}}/cncf-kathmandu:latest
+                docker run -d --name cncf_app -p 8000:${{secrets.APP_PORT}} ${{secrets.DOCKER_USER}}/cncf-kathmandu:latest
                 docker logs cncf_app
                  
                 echo "Checking container status..."
