@@ -43,5 +43,16 @@ jobs:
               if: always()
               uses: github/codeql-action/upload-sarif@v3
               with:
-                sarif_file: scout.sarif        
+                sarif_file: scout.sarif  
+                
+            - name: Run container for testing
+              run: |
+                echo "Starting container application"
+                docker run -d --name cncf_app -p 8080:8080 cncf:latest
+                sleep 10 # wait for startup
+                 
+                echo "Checking container status..."
+                docker ps     
 
+                echo "Testing application health..."
+                curl -f http://localhost:8080 || (echo "App did not start correctly" && exit 1)
