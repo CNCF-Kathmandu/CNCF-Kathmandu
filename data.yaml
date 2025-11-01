@@ -1,0 +1,35 @@
+events_db:
+  - id: 1
+    title: "Kubernetes Workshop"
+    date: "2024-11-15"
+    speaker: "John Doe"
+    description: "Learn Kubernetes from scratch"
+    status: "upcoming"
+  - id: 2
+    title: "Docker Deep Dive"
+    date: "2024-10-20"
+    speaker: "Jane Smith"
+    description: "Advanced Docker concepts"
+    status: "completed"
+
+team_members:
+  - name: "John Doe"
+    role: "Organizer"
+    bio: "Cloud Native enthusiast"
+  - name: "Jane Smith"
+    role: "Co-Organizer"
+    bio: "Kubernetes expert"
+  - name: "Bob Wilson"
+    role: "Community Lead"
+    bio: "DevOps advocate"
+
+resources:
+  - title: "Getting Started with Kubernetes"
+    link: "#"
+    type: "Tutorial"
+  - title: "Introduction to Cloud Native"
+    link: "#"
+    type: "Article"
+  - title: "CNCF Landscape"
+    link: "#"
+    type: "Reference"
