@@ -16,5 +16,5 @@ async def send_welcome_email(email:str, name: str ) -> None:
         "name": name
     })
 
-    mock_send_email(email=email, content=welcome_content)
+    await mock_send_email(email=email, content=welcome_content)
 
