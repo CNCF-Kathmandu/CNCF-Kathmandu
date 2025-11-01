@@ -42,12 +42,14 @@ events_db = [
     }
 ]
 
+# Sample team members with random names, roles, and bios
 team_members = [
     {"name": "John Doe", "role": "Organizer", "bio": "Cloud Native enthusiast"},
     {"name": "Jane Smith", "role": "Co-Organizer", "bio": "Kubernetes expert"},
     {"name": "Bob Wilson", "role": "Community Lead", "bio": "DevOps advocate"}
 ]
 
+# Sample resources with random title, link, and type information
 resources = [
     {"title": "Getting Started with Kubernetes", "link": "#", "type": "Tutorial"},
     {"title": "Introduction to Cloud Native", "link": "#", "type": "Article"},
@@ -55,6 +57,7 @@ resources = [
 ]
 
 
+# Displays all upcoming events in the home page
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     """Home page displaying community information"""
@@ -68,6 +71,7 @@ async def home(request: Request):
     return templates.TemplateResponse("index.html", context)
 
 
+# Fills the about page with community information
 @app.get("/about", response_class=HTMLResponse)
 async def about(request: Request):
     """About page with community information"""
@@ -80,6 +84,7 @@ async def about(request: Request):
     return templates.TemplateResponse("about.html", context)
 
 
+# Lists all the events in the listing page
 @app.get("/events", response_class=HTMLResponse)
 async def events(request: Request):
     """Events listing page"""
@@ -91,6 +96,7 @@ async def events(request: Request):
     return templates.TemplateResponse("events.html", context)
 
 
+# This function gets the `resources.html` page
 @app.get("/resources", response_class=HTMLResponse)
 async def resources_page(request: Request):
     """Resources page"""
@@ -102,6 +108,7 @@ async def resources_page(request: Request):
     return templates.TemplateResponse("resources.html", context)
 
 
+# This functions gets the `contact.html` page
 @app.get("/contact", response_class=HTMLResponse)
 async def contact_get(request: Request):
     """Contact page (GET)"""
@@ -113,8 +120,9 @@ async def contact_get(request: Request):
     return templates.TemplateResponse("contact.html", context)
 
 
+# This function posts the `contact.html` page
 @app.post("/contact", response_class=HTMLResponse)
-async def contact_post(request: Request, name: str = Form(...), 
+async def contact_post(request: Request, name: str = Form(...),
                        email: str = Form(...), message: str = Form(...)):
     """Contact page (POST)"""
     # In production, this would send an email or save to database
