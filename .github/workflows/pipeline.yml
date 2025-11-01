@@ -19,7 +19,7 @@ jobs:
                   password: ${{secrets.DOCKER_PASSWORD}}
               
             - name: Build Docker Image
-              run: docker build -f Dockerfile cncf:latest .
+              run: docker build -f Dockerfile -t cncf:latest .
 
             - name: Install docker scout cli
               run:  |
