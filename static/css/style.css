@@ -576,6 +576,12 @@ body {
     border: 1px solid #6ee7b7;
 }
 
+.alert-error {
+    background-color: #ff0000;
+    color: #d1fae5;
+    border: 1px solid #bf9000;
+}
+
 /* Footer */
 .footer {
     background-color: var(--text-color);
