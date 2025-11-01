@@ -6,7 +6,8 @@
         <div class="hero-content">
             <h1>Welcome to CNCF Kathmandu</h1>
             <p class="tagline">{{ tagline }}</p>
-            <p class="hero-description">Join us in exploring cloud native technologies, Kubernetes, microservices, and modern software architecture.</p>
+            <p class="hero-description">Join us in exploring cloud native technologies, Kubernetes, microservices, and
+                modern software architecture.</p>
             <div class="hero-buttons">
                 <a href="/events" class="btn btn-primary">View Upcoming Events</a>
                 <a href="/about" class="btn btn-secondary">Learn More</a>
@@ -14,6 +15,7 @@
         </div>
     </div>
 </section>
+
 
 <section class="features">
     <div class="container">
@@ -57,6 +59,27 @@
 </section>
 {% endif %}
 
+
+<!-- Newsletter Signup Form -->
+<section class="newsletter">
+    <div class="container">
+        <h2>Subscribe to our Newsletter</h2>
+        <form action="/subscribe" method="post" class="newsletter-form">
+            <div class="form-group">
+                <input type="text" name="name" placeholder="Your Name" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <input type="email" name="email" placeholder="Your Email" class="form-input" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+        </form>
+        {% if message %}
+        <p class="newsletter-message">{{ message }}</p>
+        {% endif %}
+    </div>
+</section>
+
+
 <section class="cta">
     <div class="container">
         <h2>Ready to Get Involved?</h2>
@@ -65,4 +88,3 @@
     </div>
 </section>
 {% endblock %}
-

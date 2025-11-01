@@ -44,6 +44,24 @@ async def home(request: Request):
     return templates.TemplateResponse("index.html", context)
 
 
+@app.post("/subscribe", response_class=HTMLResponse)
+async def subscribe(request: Request, name: str = Form(...), email: str = Form(...)):
+    """
+    Handles newsletter signup form submissions.
+    Currently just displays a confirmation message.
+    """
+    # In production, this would save to a database or mailing list
+    context = {
+        "request": request,
+        "title": "CNCF Kathmandu - Home",
+        "community_name": "CNCF Kathmandu",
+        "tagline": "Building the Future of Cloud Native Computing",
+        "upcoming_events": [e for e in events_db if e["status"] == "upcoming"][:3],
+        "message": f"Thank you {name}! You've been subscribed with {email}."
+    }
+    return templates.TemplateResponse("index.html", context)
+
+
 @app.get("/about", response_class=HTMLResponse)
 async def about(request: Request):
     """About page with community information"""

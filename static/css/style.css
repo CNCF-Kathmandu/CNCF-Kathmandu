@@ -32,6 +32,39 @@ body {
     padding: 0 20px;
 }
 
+
+.newsletter {
+    background-color: #f5f5f5;
+    padding: 2rem;
+    margin: 2rem 0;
+    text-align: center;
+    border-radius: 8px;
+}
+
+.newsletter h2 {
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+}
+
+.newsletter .form-group {
+    margin-bottom: 1rem;
+}
+
+.newsletter .form-input {
+    padding: 0.5rem 1rem;
+    width: 250px;
+    max-width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.newsletter-message {
+    margin-top: 1rem;
+    font-weight: bold;
+    color: green;
+}
+
+
 /* Navigation */
 .navbar {
     background-color: var(--bg-color);
