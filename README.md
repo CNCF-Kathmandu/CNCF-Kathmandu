@@ -166,3 +166,21 @@ Thank you to all contributors! You make this project awesome.
 
 *This project is perfect for Hacktoberfest. Start with beginner-friendly issues and work your way up!*
 
+
+
+## Adding or Updating Events
+
+Events are now stored in `data.yaml` for easy modification. To add a new event:
+
+1. Open `data.yaml`.
+2. Scroll to the `events_db` section.
+3. Add a new event object using the existing format:
+
+```yaml
+events_db:
+  - id: 1
+    title: "Kubernetes Workshop"
+    date: "2024-11-15"
+    speaker: "John Doe"
+    description: "Learn Kubernetes from scratch"
+    status: "upcoming"
