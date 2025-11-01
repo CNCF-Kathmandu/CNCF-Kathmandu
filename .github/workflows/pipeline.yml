@@ -44,12 +44,16 @@ jobs:
               uses: github/codeql-action/upload-sarif@v3
               with:
                 sarif_file: scout.sarif  
+            
+            - name: Add tag to push into dockerhub
+              run: docker tag cncf:latest ${{secrets.DOCKER_USER}}/cncf-kathmandu:latest
                 
             - name: Run container for testing
               run: |
                 echo "Starting container application"
-                docker run -d --name cncf_app -p 8000:8000 cncf:latest
-                sleep 10 # wait for startup
+                docker pull ${{secrets.DOCKER_USER}}/cncf:latest
+                docker run -d --name cncf_app -p 8000:${APP_PORT} ${{secrets.DOCKER_USER}}/cncf:latest
+                docker logs cncf_app
                  
                 echo "Checking container status..."
                 docker ps 
