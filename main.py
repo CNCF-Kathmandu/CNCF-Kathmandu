@@ -3,11 +3,11 @@ CNCF Kathmandu Community Website
 A community website for Cloud Native Computing Foundation (CNCF) Kathmandu Chapter
 """
 
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Request, Form, Path
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from typing import Optional
+from typing import Optional, Annotated
 import os
 
 app = FastAPI(
@@ -90,16 +90,29 @@ async def events(request: Request):
     }
     return templates.TemplateResponse("events.html", context)
 
-
 @app.get("/resources", response_class=HTMLResponse)
 async def resources_page(request: Request):
     """Resources page"""
+    
     context = {
         "request": request,
         "title": "Resources - CNCF Kathmandu",
         "resources": resources
     }
     return templates.TemplateResponse("resources.html", context)
+
+@app.get("/resource/{type}", response_class=HTMLResponse)
+async def resources_page(request: Request, type: str):
+    """Filter Resource by type"""
+
+    filteredResource = [x for x in resources if x["type"].lower() == type]
+    context = {
+        "request": request,
+        "title": "Resources - CNCF Kathmandu",
+        "resources": filteredResource
+    }
+    return templates.TemplateResponse("resources.html", context)
+
 
 
 @app.get("/contact", response_class=HTMLResponse)

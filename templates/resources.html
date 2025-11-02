@@ -12,12 +12,27 @@
     <div class="container">
         <div class="resources-section">
             <h2 class="section-title">Learning Resources</h2>
+            <select name="Category" id="categories" onchange="navigateToResource()" on>
+                <option value="/resources">--Select Resource Type--</option>
+                <option value="/resource/tutorial">Tutorial</option>
+                <option value="/resource/article">Article</option>
+                <option value="/resource/reference">Reference</option>
+            </select>
+            <script>
+                function navigateToResource() {
+                    const select = document.getElementById('categories');
+                    const selectedValue = select.value;
+                    if (selectedValue) {
+                        window.location.href = selectedValue
+                    }
+                }
+            </script>
             <div class="resources-grid">
                 {% for resource in resources %}
                 <div class="resource-card">
                     <div class="resource-type">{{ resource.type }}</div>
                     <h3>{{ resource.title }}</h3>
-                    <a href="{{ resource.link }}" class="btn btn-small">View Resource</a>
+                    <a href="{{ resource.link }}" class="btn btn-small">View Resource here</a>
                 </div>
                 {% endfor %}
             </div>
