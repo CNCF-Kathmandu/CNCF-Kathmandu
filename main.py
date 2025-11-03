@@ -12,21 +12,25 @@ from email_validator import validate_email, EmailNotValidError
 from tasks import send_welcome_email
 from typing import Optional
 import os
-import datetime
+
+# Import all constants from the constants.py file
+import constants
 
 app = FastAPI(
-    title="CNCF Kathmandu",
-    description="Official website for CNCF Kathmandu Community",
-    version="1.0.0",
+    title=constants.APP_TITLE,
+    description=constants.APP_DESCRIPTION,
+    version=constants.APP_VERSION,
 )
 
-year = datetime.datetime.now().year
-
 # Mount static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount(
+    constants.STATIC_URL_PATH,
+    StaticFiles(directory=constants.STATIC_DIR),
+    name=constants.STATIC_NAME,
+)
 
 # Templates
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory=constants.TEMPLATES_DIR)
 
 # Sample data storage (in production, this would be a database)
 events_db = [
@@ -36,7 +40,7 @@ events_db = [
         "date": "2024-11-15",
         "speaker": "John Doe",
         "description": "Learn Kubernetes from scratch",
-        "status": "upcoming",
+        "status": constants.EventStatus.UPCOMING,
     },
     {
         "id": 2,
@@ -44,7 +48,7 @@ events_db = [
         "date": "2024-10-20",
         "speaker": "Jane Smith",
         "description": "Advanced Docker concepts",
-        "status": "completed",
+        "status": constants.EventStatus.COMPLETED,
     },
 ]
 
@@ -67,15 +71,21 @@ resources = [
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     """Home page displaying community information"""
+    upcoming = [
+        e
+        for e in events_db
+        if e["status"] == constants.EventStatus.UPCOMING
+    ][: constants.HOME_UPCOMING_EVENTS_LIMIT]
+
     context = {
         "request": request,
-        "title": "CNCF Kathmandu - Home",
-        "year": year,
-        "community_name": "CNCF Kathmandu",
-        "tagline": "Building the Future of Cloud Native Computing",
-        "upcoming_events": [e for e in events_db if e["status"] == "upcoming"][:3],
+        "title": constants.PageTitles.HOME,
+        "year": constants.CURRENT_YEAR,
+        "community_name": constants.COMMUNITY_NAME,
+        "tagline": constants.PageContent.TAGLINE,
+        "upcoming_events": upcoming,
     }
-    return templates.TemplateResponse("index.html", context)
+    return templates.TemplateResponse(constants.TemplateFiles.INDEX, context)
 
 
 # Fills the about page with community information
@@ -84,11 +94,11 @@ async def about(request: Request):
     """About page with community information"""
     context = {
         "request": request,
-        "title": "About - CNCF Kathmandu",
+        "title": constants.PageTitles.ABOUT,
         "team_members": team_members,
-        "description": "We are a community of cloud native enthusiasts in Kathmandu, Nepal. Our mission is to promote cloud native technologies and help developers learn and grow together.",
+        "description": constants.PageContent.ABOUT_DESCRIPTION,
     }
-    return templates.TemplateResponse("about.html", context)
+    return templates.TemplateResponse(constants.TemplateFiles.ABOUT, context)
 
 
 # Lists all the events in the listing page
@@ -97,10 +107,10 @@ async def events(request: Request):
     """Events listing page"""
     context = {
         "request": request,
-        "title": "Events - CNCF Kathmandu",
+        "title": constants.PageTitles.EVENTS,
         "events": events_db,
     }
-    return templates.TemplateResponse("events.html", context)
+    return templates.TemplateResponse(constants.TemplateFiles.EVENTS, context)
 
 
 # This function gets the `resources.html` page
@@ -109,18 +119,18 @@ async def resources_page(request: Request):
     """Resources page"""
     context = {
         "request": request,
-        "title": "Resources - CNCF Kathmandu",
+        "title": constants.PageTitles.RESOURCES,
         "resources": resources,
     }
-    return templates.TemplateResponse("resources.html", context)
+    return templates.TemplateResponse(constants.TemplateFiles.RESOURCES, context)
 
 
 # This functions gets the `contact.html` page
 @app.get("/contact", response_class=HTMLResponse)
 async def contact_get(request: Request):
     """Contact page (GET)"""
-    context = {"request": request, "title": "Contact - CNCF Kathmandu", "message": None}
-    return templates.TemplateResponse("contact.html", context)
+    context = {"request": request, "title": constants.PageTitles.CONTACT, "message": None}
+    return templates.TemplateResponse(constants.TemplateFiles.CONTACT, context)
 
 
 # This function posts the `contact.html` page
@@ -132,12 +142,12 @@ async def contact_post(
     email: str = Form(...),
     message: str = Form(...),
 ):
-  ]    """Contact page (POST)"""
+    """Contact page (POST)"""
     # In production, this would send an email or save to database
     context = {
         "request": request,
-        "title": "Contact - CNCF Kathmandu",
-        "message": "Thank you for your message! We'll get back to you soon.",
+        "title": constants.PageTitles.CONTACT,
+        "message": constants.PageContent.CONTACT_SUCCESS_MESSAGE,
         "is_error": False,
     }
 
@@ -148,18 +158,20 @@ async def contact_post(
     except EmailNotValidError as e:
         context = {
             "request": request,
-            "title": "Contact - CNCF Kathmandu",
+            "title": constants.PageTitles.CONTACT,
             "is_error": True,
             "message": str(e),
         }
-        return templates.TemplateResponse("contact.html", context)
+        return templates.TemplateResponse(constants.TemplateFiles.CONTACT, context)
 
     background_tasks.add_task(send_welcome_email, email, name)
 
-    return templates.TemplateResponse("contact.html", context)
+    return templates.TemplateResponse(constants.TemplateFiles.CONTACT, context)
 
 
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(
+        app, host=constants.SERVER_HOST, port=constants.SERVER_PORT
+    )
