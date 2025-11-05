@@ -6,6 +6,118 @@
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-search {
+            position: relative;
+        }
+
+        .nav-search input[type="search"] {
+            padding: 0.45rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            font-size: 0.95rem;
+            background-color: var(--bg-light);
+            min-width: 240px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .nav-search input[type="search"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            background-color: var(--bg-color);
+        }
+
+        .search-results {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: calc(100% + 0.75rem);
+            width: 320px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            padding: 1rem;
+            z-index: 1100;
+        }
+
+        .search-results.visible {
+            display: block;
+        }
+
+        .search-results h4 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .search-results ul {
+            list-style: none;
+            margin: 0 0 0.75rem 0;
+            padding: 0;
+        }
+
+        .search-results li + li {
+            margin-top: 0.75rem;
+        }
+
+        .search-result-link {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            display: block;
+        }
+
+        .search-result-link:hover {
+            color: var(--primary-color);
+        }
+
+        .search-result-meta {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+        }
+
+        .search-empty,
+        .search-error,
+        .search-placeholder {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        @media (max-width: 768px) {
+            .nav-actions {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .nav-search {
+                width: 100%;
+            }
+
+            .nav-search input[type="search"] {
+                width: 100%;
+                min-width: 0;
+            }
+
+            .search-results {
+                position: static;
+                width: 100%;
+                box-shadow: var(--shadow);
+            }
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -13,13 +125,23 @@
             <div class="nav-brand">
                 <h2>CNCF Kathmandu</h2>
             </div>
-            <ul class="nav-menu">
-                <li><a href="/" class="nav-link">Home</a></li>
-                <li><a href="/about" class="nav-link">About</a></li>
-                <li><a href="/events" class="nav-link">Events</a></li>
-                <li><a href="/resources" class="nav-link">Resources</a></li>
-                <li><a href="/contact" class="nav-link">Contact</a></li>
-            </ul>
+            <div class="nav-actions">
+                <ul class="nav-menu">
+                    <li><a href="/" class="nav-link">Home</a></li>
+                    <li><a href="/about" class="nav-link">About</a></li>
+                    <li><a href="/events" class="nav-link">Events</a></li>
+                    <li><a href="/resources" class="nav-link">Resources</a></li>
+                    <li><a href="/contact" class="nav-link">Contact</a></li>
+                </ul>
+                <div class="nav-search">
+                    <form id="nav-search-form" action="javascript:void(0);" autocomplete="off">
+                        <input type="search" id="nav-search-input" name="q" placeholder="Search events &amp; resources">
+                    </form>
+                    <div id="search-results" class="search-results" aria-live="polite">
+                        <div id="search-results-content" class="search-placeholder">Start typing to explore events and resources.</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -56,6 +178,125 @@
             </div>
         </div>
     </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('nav-search-input');
+            const resultsContainer = document.getElementById('search-results');
+            const resultsContent = document.getElementById('search-results-content');
+            const navSearch = document.querySelector('.nav-search');
+            let debounceTimer = null;
+
+            function escapeHtml(value) {
+                const map = {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                };
+                return value.replace(/[&<>"']/g, function (char) {
+                    return map[char];
+                });
+            }
+
+            function renderResults(data, query) {
+                if ((!data.events || data.events.length === 0) && (!data.resources || data.resources.length === 0)) {
+                    resultsContent.innerHTML = '<p class="search-empty">No results found for "' + escapeHtml(query) + '".</p>';
+                    resultsContainer.classList.add('visible');
+                    return;
+                }
+
+                let html = '';
+
+                if (data.events && data.events.length) {
+                    html += '<div class="search-section">';
+                    html += '<h4>Events</h4>';
+                    html += '<ul>';
+                    data.events.forEach(function (event) {
+                        const url = '/events#event-' + event.id;
+                        const title = escapeHtml(event.title);
+                        const meta = escapeHtml(event.date + ' • ' + event.speaker);
+                        html += '<li>';
+                        html += '<a class="search-result-link" href="' + url + '">' + title + '</a>';
+                        html += '<span class="search-result-meta">' + meta + '</span>';
+                        html += '</li>';
+                    });
+                    html += '</ul>';
+                    html += '</div>';
+                }
+
+                if (data.resources && data.resources.length) {
+                    html += '<div class="search-section">';
+                    html += '<h4>Resources</h4>';
+                    html += '<ul>';
+                    data.resources.forEach(function (resource) {
+                        const url = resource.link || '#';
+                        const title = escapeHtml(resource.title);
+                        const meta = escapeHtml(resource.type);
+                        html += '<li>';
+                        html += '<a class="search-result-link" href="' + url + '" target="_blank" rel="noopener">' + title + '</a>';
+                        html += '<span class="search-result-meta">' + meta + '</span>';
+                        html += '</li>';
+                    });
+                    html += '</ul>';
+                    html += '</div>';
+                }
+
+                resultsContent.innerHTML = html;
+                resultsContainer.classList.add('visible');
+            }
+
+            function showPlaceholder() {
+                resultsContent.innerHTML = '<p class="search-placeholder">Start typing to explore events and resources.</p>';
+                resultsContainer.classList.remove('visible');
+            }
+
+            searchInput.addEventListener('input', function (event) {
+                const query = event.target.value.trim();
+                clearTimeout(debounceTimer);
+
+                if (!query) {
+                    showPlaceholder();
+                    return;
+                }
+
+                debounceTimer = window.setTimeout(function () {
+                    fetch('/search?q=' + encodeURIComponent(query))
+                        .then(function (response) {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(function (data) {
+                            renderResults(data, query);
+                        })
+                        .catch(function () {
+                            resultsContent.innerHTML = '<p class="search-error">Unable to fetch search results. Please try again.</p>';
+                            resultsContainer.classList.add('visible');
+                        });
+                }, 300);
+            });
+
+            searchInput.addEventListener('focus', function () {
+                if (searchInput.value.trim()) {
+                    resultsContainer.classList.add('visible');
+                }
+            });
+
+            document.addEventListener('click', function (event) {
+                if (!navSearch.contains(event.target)) {
+                    resultsContainer.classList.remove('visible');
+                }
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    resultsContainer.classList.remove('visible');
+                    searchInput.blur();
+                }
+            });
+        });
+    </script>
 </body>
 </html>
-

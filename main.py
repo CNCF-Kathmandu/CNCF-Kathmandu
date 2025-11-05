@@ -5,8 +5,9 @@ A community website for Cloud Native Computing Foundation (CNCF) Kathmandu Chapt
 
 from fastapi import FastAPI, Request, Form
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse,JSONResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.exceptions import RequestValidationError
 from typing import Optional
 import os
 
@@ -15,6 +16,11 @@ app = FastAPI(
     description="Official website for CNCF Kathmandu Community",
     version="1.0.0"
 )
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """Surface form validation issues to the caller."""
+    raise exc
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -101,6 +107,37 @@ async def resources_page(request: Request):
     }
     return templates.TemplateResponse("resources.html", context)
 
+@app.get("/search")
+async def search(query: Optional[str] = None, q: Optional[str] = None):
+    """Search events and resources by query string."""
+    search_term = (query or q or "").strip().lower()
+
+    if not search_term:
+        return JSONResponse({"events": [], "resources": []})
+
+    def matches_event(event: dict) -> bool:
+        searchable_values = [
+            event.get("title", ""),
+            event.get("description", ""),
+            event.get("speaker", ""),
+            event.get("status", ""),
+        ]
+        return any(search_term in value.lower() for value in searchable_values)
+
+    def matches_resource(resource: dict) -> bool:
+        searchable_values = [
+            resource.get("title", ""),
+            resource.get("type", "")
+        ]
+        return any(search_term in value.lower() for value in searchable_values)
+
+    matching_events = [event for event in events_db if matches_event(event)][:5]
+    matching_resources = [resource for resource in resources if matches_resource(resource)][:5]
+
+    return JSONResponse({
+        "events": matching_events,
+        "resources": matching_resources
+    })
 
 @app.get("/contact", response_class=HTMLResponse)
 async def contact_get(request: Request):
