@@ -33,7 +33,7 @@ events_db = [
     {
         "id": 1,
         "title": "Kubernetes Workshop",
-        "date": "2024-11-15",
+        "date": "2025-11-15",
         "speaker": "John Doe",
         "description": "Learn Kubernetes from scratch",
         "status": "upcoming",
@@ -41,7 +41,7 @@ events_db = [
     {
         "id": 2,
         "title": "Docker Deep Dive",
-        "date": "2024-10-20",
+        "date": "2025-10-20",
         "speaker": "Jane Smith",
         "description": "Advanced Docker concepts",
         "status": "completed",
@@ -103,6 +103,18 @@ async def events(request: Request):
     return templates.TemplateResponse("events.html", context)
 
 
+# Displays the calendar view with all scheduled events
+@app.get("/calendar", response_class=HTMLResponse)
+async def calendar(request: Request):
+    """Calendar view showing all events"""
+    context = {
+        "request": request,
+        "title": "Calendar - CNCF Kathmandu",
+        "events": events_db,  # events list
+    }
+    return templates.TemplateResponse("calendar.html", context)
+
+
 # This function gets the `resources.html` page
 @app.get("/resources", response_class=HTMLResponse)
 async def resources_page(request: Request):
@@ -132,7 +144,7 @@ async def contact_post(
     email: str = Form(...),
     message: str = Form(...),
 ):
-  ]    """Contact page (POST)"""
+    """Contact page (POST)"""
     # In production, this would send an email or save to database
     context = {
         "request": request,

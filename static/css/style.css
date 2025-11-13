@@ -659,3 +659,51 @@ body {
     }
 }
 
+/* Calendar Component */
+.calendar-container {
+    max-width: 1000px;
+    margin: 4rem auto;
+    padding: 2rem;
+    background-color: var(--bg-light);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+/* Event Modal */
+.event-modal {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--bg-color);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  z-index: 1000;
+  max-width: 400px;
+  width: 90%;
+  font-family: inherit;
+}
+
+.event-modal h2 {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.event-modal p {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+}
+
+/* Modal Backdrop  */
+.modal-backdrop {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 999;
+}
