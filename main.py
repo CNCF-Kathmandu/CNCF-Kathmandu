@@ -60,7 +60,10 @@ async def about(request: Request):
         "request": request,
         "title": "About - CNCF Kathmandu",
         "team_members": team_members,
-        "description": "We are a community of cloud native enthusiasts in Kathmandu, Nepal. Our mission is to promote cloud native technologies and help developers learn and grow together.",
+        "description": (
+            "We are a community of cloud native enthusiasts in Kathmandu, Nepal. "
+            "Our mission is to promote cloud native technologies and help developers learn and grow together."
+        ),
     }
     return templates.TemplateResponse("about.html", context)
 
@@ -107,7 +110,6 @@ async def contact_post(
     message: str = Form(...),
 ):
     """Contact page (POST)"""
-    # In production, this would send an email or save to database
     context = {
         "request": request,
         "title": "Contact - CNCF Kathmandu",
@@ -118,7 +120,6 @@ async def contact_post(
     try:
         email_info = validate_email(email, check_deliverability=False)
         email = email_info.normalized
-
     except EmailNotValidError as e:
         context = {
             "request": request,
