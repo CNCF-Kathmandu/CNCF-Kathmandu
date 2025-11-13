@@ -3,18 +3,24 @@ CNCF Kathmandu Community Website
 A community website for Cloud Native Computing Foundation (CNCF) Kathmandu Chapter
 """
 
-from fastapi import FastAPI, Request, Form
+from fastapi import BackgroundTasks, FastAPI, Request, Form
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from email_validator import validate_email, EmailNotValidError
+from tasks import send_welcome_email
+from typing import Optional
 import yaml
 import os
+import datetime
 
 app = FastAPI(
     title="CNCF Kathmandu",
     description="Official website for CNCF Kathmandu Community",
-    version="1.0.0"
+    version="1.0.0",
 )
+
+year = datetime.datetime.now().year
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -31,19 +37,22 @@ team_members = data.get("team_members", [])
 resources = data.get("resources", [])
 
 
+# Displays all upcoming events in the home page
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     """Home page displaying community information"""
     context = {
         "request": request,
         "title": "CNCF Kathmandu - Home",
+        "year": year,
         "community_name": "CNCF Kathmandu",
         "tagline": "Building the Future of Cloud Native Computing",
-        "upcoming_events": [e for e in events_db if e["status"] == "upcoming"][:3]
+        "upcoming_events": [e for e in events_db if e["status"] == "upcoming"][:3],
     }
     return templates.TemplateResponse("index.html", context)
 
 
+# Fills the about page with community information
 @app.get("/about", response_class=HTMLResponse)
 async def about(request: Request):
     """About page with community information"""
@@ -51,54 +60,75 @@ async def about(request: Request):
         "request": request,
         "title": "About - CNCF Kathmandu",
         "team_members": team_members,
-        "description": "We are a community of cloud native enthusiasts in Kathmandu, Nepal. Our mission is to promote cloud native technologies and help developers learn and grow together."
+        "description": "We are a community of cloud native enthusiasts in Kathmandu, Nepal. Our mission is to promote cloud native technologies and help developers learn and grow together.",
     }
     return templates.TemplateResponse("about.html", context)
 
 
+# Lists all the events in the listing page
 @app.get("/events", response_class=HTMLResponse)
 async def events(request: Request):
     """Events listing page"""
     context = {
         "request": request,
         "title": "Events - CNCF Kathmandu",
-        "events": events_db
+        "events": events_db,
     }
     return templates.TemplateResponse("events.html", context)
 
 
+# This function gets the `resources.html` page
 @app.get("/resources", response_class=HTMLResponse)
 async def resources_page(request: Request):
     """Resources page"""
     context = {
         "request": request,
         "title": "Resources - CNCF Kathmandu",
-        "resources": resources
+        "resources": resources,
     }
     return templates.TemplateResponse("resources.html", context)
 
 
+# This functions gets the `contact.html` page
 @app.get("/contact", response_class=HTMLResponse)
 async def contact_get(request: Request):
     """Contact page (GET)"""
-    context = {
-        "request": request,
-        "title": "Contact - CNCF Kathmandu",
-        "message": None
-    }
+    context = {"request": request, "title": "Contact - CNCF Kathmandu", "message": None}
     return templates.TemplateResponse("contact.html", context)
 
 
+# This function posts the `contact.html` page
 @app.post("/contact", response_class=HTMLResponse)
-async def contact_post(request: Request, name: str = Form(...), 
-                       email: str = Form(...), message: str = Form(...)):
+async def contact_post(
+    request: Request,
+    background_tasks: BackgroundTasks,
+    name: str = Form(...),
+    email: str = Form(...),
+    message: str = Form(...),
+):
     """Contact page (POST)"""
     # In production, this would send an email or save to database
     context = {
         "request": request,
         "title": "Contact - CNCF Kathmandu",
-        "message": "Thank you for your message! We'll get back to you soon."
+        "message": "Thank you for your message! We'll get back to you soon.",
+        "is_error": False,
     }
+
+    try:
+        email_info = validate_email(email, check_deliverability=False)
+        email = email_info.normalized
+
+    except EmailNotValidError as e:
+        context = {
+            "request": request,
+            "title": "Contact - CNCF Kathmandu",
+            "is_error": True,
+            "message": str(e),
+        }
+        return templates.TemplateResponse("contact.html", context)
+
+    background_tasks.add_task(send_welcome_email, email, name)
     return templates.TemplateResponse("contact.html", context)
 
 
